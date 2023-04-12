@@ -1,0 +1,15 @@
+-- AlterTable
+ALTER TABLE `Orders` MODIFY `street_address` VARCHAR(191) NULL,
+    MODIFY `state` VARCHAR(191) NULL,
+    MODIFY `country_code` VARCHAR(191) NULL,
+    MODIFY `zip` VARCHAR(191) NULL,
+    MODIFY `phone_number` VARCHAR(191) NULL,
+    MODIFY `email` VARCHAR(191) NULL,
+    MODIFY `name` VARCHAR(191) NULL,
+    MODIFY `order_status` VARCHAR(191) NULL,
+    MODIFY `shipper_name` VARCHAR(191) NULL,
+    MODIFY `payment_date` DATETIME(3) NULL,
+    MODIFY `shipped_date` DATETIME(3) NULL,
+    MODIFY `tracking_number` VARCHAR(191) NULL,
+    MODIFY `created_at` DATETIME(3) NULL DEFAULT CURRENT_TIMESTAMP(3),
+    MODIFY `updated_at` DATETIME(3) NULL;

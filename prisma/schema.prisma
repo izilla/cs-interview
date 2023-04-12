@@ -1,0 +1,112 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["views"]
+}
+
+datasource db {
+  provider          = "mysql"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+  relationMode      = "prisma"
+}
+
+model Users {
+  id              Int        @id @default(autoincrement())
+  name            String
+  email           String
+  password_hash   String
+  password_plain  String
+  superadmin      Boolean    @default(false)
+  shop_name       String
+  remember_token  String?
+  created_at      DateTime   @default(now())
+  updated_at      DateTime   @updatedAt
+  card_brand      String
+  card_last_four  String
+  trial_ends_at   DateTime
+  shop_domain     String
+  is_enabled      Boolean    @default(true)
+  billing_plan    String
+  trial_starts_at DateTime   @default(now())
+  Products        Products[]
+}
+
+model Products {
+  id             Int         @id @default(autoincrement())
+  product_name   String
+  description    String      @db.VarChar(256)
+  style          String
+  brand          String
+  created_at     DateTime    @default(now())
+  updated_at     DateTime    @updatedAt
+  url            String?
+  product_type   String?
+  shipping_price Int?
+  note           String?
+  admin          Users?      @relation(fields: [admin_id], references: [id])
+  admin_id       Int?
+  Inventory      Inventory[]
+  Orders         Orders[]
+
+  @@index([admin_id])
+}
+
+model Inventory {
+  id               Int      @id @default(autoincrement())
+  product          Products @relation(fields: [product_id], references: [id])
+  product_id       Int
+  quantity         Int
+  color            String
+  size             String
+  weight           Decimal
+  price_cents      Int
+  sale_price_cents Int
+  cost_cents       Int
+  sku              String
+  length           Decimal
+  width            Decimal
+  height           Decimal
+  note             String
+  Orders           Orders[]
+
+  @@index([product_id])
+}
+
+model Orders {
+  id                 Int        @id @default(autoincrement())
+  product_id         Int?
+  product            Products?  @relation(fields: [product_id], references: [id])
+  inventory          Inventory? @relation(fields: [inventory_id], references: [id])
+  inventory_id       Int?
+  street_address     String?
+  apartment          String?
+  city               String?
+  state              String?
+  country_code       String?
+  zip                String?
+  phone_number       String?
+  email              String?
+  name               String?
+  order_status       String
+  payment_ref        String?
+  transaction_id     String?
+  payment_amt_cents  Int?
+  ship_charged_cents Int?
+  ship_cost_cents    Int?
+  subtotal_cents     Int?
+  total_cents        Int?
+  shipper_name       String?
+  payment_date       DateTime?
+  shipped_date       DateTime?
+  tracking_number    String?
+  tax_total_cents    Int?
+  created_at         DateTime?  @default(now())
+  updated_at         DateTime?  @updatedAt
+
+  @@index([inventory_id])
+  @@index([product_id])
+  @@index([email])
+}
